@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 var connection = mysql.createPool({
   host     : 'localhost',
   user     : 'hangman',
-  password : '1l0vesleep',
+  password : 'password',
   database : 'hangman'
 });
 

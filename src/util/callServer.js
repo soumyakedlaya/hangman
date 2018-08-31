@@ -1,5 +1,6 @@
 const myHost = 'http://localhost:4000/';
 
+//makes a get request to LinkedIn API to get the words. On success, call cbSucess. On failure, call cbFailure
 export default function getData (url, cbSuccess, cbFailure) {
             fetch(myHost + url, {
                 method: 'get',
