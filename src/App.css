@@ -1,0 +1,46 @@
+.success-char {
+  border: 2px solid gray;
+  margin: 20px;
+  padding: 8px;
+}
+
+#error-box {
+  background-color: #0000ff4a;
+  border: 2px solid black;
+  padding: 4px;
+  margin-bottom: 50px;
+  height: 100px;
+  width: 60%;
+}
+.error-char {
+  margin: 4px;
+}
+
+#guess-input {
+  margin-top: 50px;
+}
+
+#word-container {
+  position: absolute;
+}
+
+#guess-box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.display-message {
+  margin-left: 10px;
+}
+
+#hangman-structure {
+  fill: white;
+  stroke: red;
+  stroke-width: 5;
+}
+
+.hide {
+  display: none;
+}
