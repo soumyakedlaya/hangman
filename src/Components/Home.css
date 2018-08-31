@@ -1,0 +1,165 @@
+#title {
+  font-size: 37px;
+  text-align: center;
+  margin-left: -57px;
+  font-family: fantasy;
+  color: teal;
+}
+
+.success-char {
+  border: 2px solid gray;
+  margin: 20px;
+  padding: 8px;
+  background-color: beige;
+  color: teal;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+#error-box {
+  background-color: beige;
+  margin-bottom: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #ff6200;
+  font-size: 24px;
+  font-family: fantasy;
+  height: 100px;
+  width: 400px;
+}
+
+.error-char {
+  margin: 8px;
+}
+
+#guess-input {
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+  margin-left: -110px;
+}
+
+#guess-box {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+
+.display-message {
+  padding-top: 30px;
+  margin-left: 128px;
+}
+
+#win-message {
+  color: #1c7d1c;
+  font-size: 23px;
+  margin-left: 152px;
+}
+
+#lose-message {
+  color: crimson;
+  font-size: 23px;
+  margin-left: 72px;
+}
+
+#hangman-structure {
+  fill: #ff7f5000;
+  stroke: #676565fa;
+  stroke-width: 5;
+}
+
+#error-wrapper {
+  width: 67%;
+  margin-left: 10px;
+}
+
+#word-container {
+  margin-top: 60px;
+}
+
+#game-container {
+  display: inline-flex;
+  width: 100%;
+  background-color: #ff7f5085;
+}
+
+#letters-title {
+  font-size: 20px;
+  margin-top: 34px;
+  margin-left: 92px;
+  font-family: cursive;
+  -webkit-margin-after: 10px;
+  text-align: center;
+}
+
+#top-scores {
+  background-color: beige;
+  border-radius: 10px;
+  border: none;
+  width: 30%;
+  padding: 30px;
+}
+
+.top-score-column {
+  padding-bottom: 12px;
+}
+
+.top-score-column:nth-of-type(2) {
+  padding-left: 24px;
+}
+
+#leaderboard {
+  margin-top: 70px;
+  margin-right: 30px;
+  margin-left: 60px;
+  text-align: center;
+}
+
+#leaderboard-title {
+  font-size: 20px;
+  font-family: cursive;
+  -webkit-margin-after: 10px;
+}
+
+.center {
+  text-align: center;
+}
+
+#leader-score {
+  padding-left: 24px;
+}
+
+#leader-content {
+  color: #ff6200;
+}
+
+#middle-content {
+  margin-right: 48px;
+  width: 41%
+}
+
+.try-again {
+  padding: 12px;
+  width: 100px;
+  margin-left: 147px;
+  font-size: 15px;
+  color: darkslategray;
+  margin-top: 12px;
+}
+
+#spinner-container {
+  z-index: 1000;
+  margin-left: 60px;
+}
+
+.spinner {
+  border-color: chartreuse;
+  border-width: 5px;
+}
+
+.rc-slider-mark-text {
+  color: #655e5e;
+}

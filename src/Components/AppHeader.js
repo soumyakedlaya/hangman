@@ -4,7 +4,7 @@ class AppHeader extends Component {
   render(){
     return(
       <div className="App-header">
-        <h2>Hangman</h2>
+        <h2 id="title">Hangman</h2>
       </div>
     );
   }

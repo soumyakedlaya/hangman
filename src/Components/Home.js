@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
-import $ from 'jquery';
-import AppHeader from './Components/AppHeader';
+import AppHeader from './AppHeader';
 import Slider, { Range } from 'rc-slider';
 import Spinner from 'react-spinner-material';
 import 'rc-slider/assets/index.css';
-import './App.css';
+import './Home.css';
+import getData from '../util/callServer';
 
 const bodyPartsObj = {
-  head: <circle cx="320" cy="190" r="40" fill="black"/>,
-  body: <line x1="320" y1="190" x2="320" y2="360"  style={{fill:'none',stroke:'black',strokeWidth:3}}/>,
-  leftArm: <line x1="320" y1="260" x2="250" y2="230" style={{fill:'none',stroke:'black',strokeWidth:3}}/>,
-  rightArm: <line x1="320" y1="260" x2="390" y2="230" style={{fill:'none',stroke:'black',strokeWidth:3}}/>,
-  leftLeg: <line x1="320" y1="360" x2="250" y2="450" style={{fill:'none',stroke:'black',strokeWidth:3}}/>,
-  rightLeg: <line x1="320" y1="360" x2="390" y2="450" style={{fill:'none',stroke:'black',strokeWidth:3}}/>
+  head: <circle cx="320" cy="190" r="40" fill="darkslategray"/>,
+  body: <line x1="320" y1="190" x2="320" y2="360"  style={{fill:'none',stroke:'darkslategray',strokeWidth:2}}/>,
+  leftArm: <line x1="320" y1="260" x2="250" y2="230" style={{fill:'none',stroke:'darkslategray',strokeWidth:2}}/>,
+  rightArm: <line x1="320" y1="260" x2="390" y2="230" style={{fill:'none',stroke:'darkslategray',strokeWidth:2}}/>,
+  leftLeg: <line x1="320" y1="360" x2="250" y2="450" style={{fill:'none',stroke:'darkslategray',strokeWidth:2}}/>,
+  rightLeg: <line x1="320" y1="360" x2="390" y2="450" style={{fill:'none',stroke:'darkslategray',strokeWidth:2}}/>
 }
 
 var difficultyLevel = 1;
 
-class App extends Component {
+class Home extends Component {
   constructor(){
     super();
     this.state = this.getInitialState();
@@ -42,45 +42,43 @@ class App extends Component {
   }
 
   getRandomWord(difficultyLevel){
-    console.log("getRandomWord(): ")
+    this.state.successItems = [];
     this.setState({spinnerVisible: true});
-    $.ajax({
-      url: 'http://localhost:4000/getWords?difficulty=' + difficultyLevel,
-      success: function(data){
-        // debugger;
-          var allWords = data.words.split("\n");
-
-          var min = 0;
-          var max = allWords.length;
-
-          var randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
-
-          console.log("word = " + allWords[randomIndex]);
-          allWords[randomIndex].split('').map((item) =>
-            this.state.successItems.push('_'));
-          this.setState({randomSelectedWord: allWords[randomIndex], successItems: this.state.successItems, spinnerVisible: false});
-          // debugger;
-      }.bind(this),
-      error: function(xhr, status, err){
-        console.log(err);
-      }
-    });
+    const url = 'getWords?difficulty=' + difficultyLevel
+    getData(url, this.randomWordSuccess, this.randomWordFailure )
   }
 
-getScores() {
-  console.log("getScores(): ")
-  this.setState({spinnerVisible: true});
-  $.ajax({
-    url: 'http://localhost:4000/getScores',
-    success: function(data){
-      console.log("Scores:", data);
-      this.setState({topScores: JSON.parse(data)});
-    }.bind(this),
-    error: function(xhr, status, err){
-      console.log(err);
-    }
-  });
-}
+  randomWordSuccess = (data) => {
+    var allWords = data.words.split("\n");
+
+    var min = 0;
+    var max = allWords.length;
+
+    var randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    allWords[randomIndex].split('').map((item) =>
+      this.state.successItems.push('_'));
+    this.setState({randomSelectedWord: allWords[randomIndex], successItems: this.state.successItems, spinnerVisible: false});
+  }
+
+  randomWordFailure = (err) => {
+    console.log(err);
+  }
+
+  getScores() {
+    this.setState({spinnerVisible: true});
+    const url = 'getScores';
+    getData(url, this.getScoresSuccess, this.getScoresFailure )
+  }
+
+  getScoresSuccess = (data) => {
+    this.setState({topScores: data.scores});
+  }
+
+  getScoresFailure = (err) => {
+    console.log(err)
+  }
+
   componentDidMount(){
     this.getRandomWord(this.state.difficulty);
     this.getScores();
@@ -88,10 +86,8 @@ getScores() {
 
   validateInput(event){
     var value = event.target.value.toLowerCase();
-    console.log("validateInput(): value = ", value);
 
     var nonLetters = value.match(/^[^a-zA-Z]+$/) ? true : false;
-    console.log("nonLetters = ", nonLetters);
 
     if (value.length && !nonLetters) {
       var error = true;
@@ -126,10 +122,8 @@ getScores() {
   }
 
   drawBodyPart() {
-    console.log("drawBodyPart(): numGuesses = " + this.state.numGuesses);
     switch (this.state.numGuesses) {
       case 5:
-        console.log("case numGuesses = 5");
         this.state.bodyParts.push(bodyPartsObj.head);
         this.setState({bodyParts: this.state.bodyParts});
         break;
@@ -175,13 +169,15 @@ getScores() {
     var successChar;
     var errorChar;
     var displayMessage;
+    var tryAgainButton;
+
     console.log('topscores', this.state.topScores[0])
     var topScores = this.state.topScores.map((item) => {
       return (
-        <div>
-          <div>User: {item.username}</div>
-          <div>Score: {item.score}</div>
-        </div>
+        <tr id="leader-content">
+          <td className="center">{item.username}</td>
+          <td className="center" id="leader-score">{item.score}</td>
+        </tr>
       )
     })
 
@@ -203,47 +199,63 @@ getScores() {
     }
 
     if(this.state.wordGuessed){
-      displayMessage = <p className="display-message">You Win!</p>
+      displayMessage = <p className="display-message" id="win-message">You Win!</p>
+      tryAgainButton = <button className="try-again" onClick={() => this.handleButtonClick()}>Try Again!</button>
     }
     else if(this.state.gameOver){
-      displayMessage = <p className="display-message">Game Over! The word is {this.state.randomSelectedWord}</p>
+      displayMessage = <p className="display-message" id="lose-message">Game Over! The word is {this.state.randomSelectedWord}</p>
+      tryAgainButton = <button className="try-again" onClick={() => this.handleButtonClick()}>Try Again!</button>
     }
     else{
       displayMessage = <p className="display-message">Number of guesses left: {this.state.numGuesses} </p>
     }
 
+
     return (
       <div className="App">
-        <AppHeader />
-        <hr />
-        <button onClick={() => this.handleButtonClick()}>Try Again!</button>
-
-        <div style={{marginTop: '50%', marginLeft:'50%'}}>
-        <Spinner size={50} spinnerColor={"#333"} spinnerWidth={2} visible={this.state.spinnerVisible}/>
-        </div>
-        <svg width="450" height="480">
-          <polyline id="hangman-structure" points="400,430 100,430 150,430 150,100 320,100 320,150"/>
-          {this.state.bodyParts}
-        </svg>
-        <div id="error-box">
-          {errorChar}
-        </div>
-        <div id="word-container">
-          {successChar}
-          <div id="guess-box">
-            <input id="guess-input" type= "text" value={this.state.guessedCharacter} placeholder="Guess!" maxLength="1" disabled={this.state.gameOver} onChange={this.validateInput.bind(this)}/>
-            {displayMessage}
+        <div id="game-container">
+          <svg width="450" height="700">
+            <polyline id="hangman-structure" points="400,530 100,530 150,530 150,100 320,100 320,150"/>
+            {this.state.bodyParts}
+          </svg>
+          <div id="middle-content">
+            <AppHeader />
+            <div id="error-wrapper">
+              <p id="letters-title">Incorrect Letters Guessed</p>
+              <div id="error-box">
+                {errorChar}
+              </div>
+            </div>
+            <div>
+              <p className="center">Slide to change the difficulty level:</p>
+              <Slider min={1} max={10} step={1} marks={{1:"1", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6", 7:"7", 8:"8", 9:"9", 10:"10"}} onChange= {(value) => this.handleDifficultyChange(value)}/>
+            </div>
+            <div id="word-container">
+              {successChar}
+              {displayMessage}
+              <div id="guess-box">
+                <div id="spinner-container">
+                  <Spinner size={50} spinnerColor={"black"} spinnerWidth={5} visible={this.state.spinnerVisible}/>
+                </div>
+                <input id="guess-input" type= "text" value={this.state.guessedCharacter} placeholder="Guess a letter!" maxLength="1" disabled={this.state.gameOver} onChange={this.validateInput.bind(this)}/>
+              </div>
+            </div>
+            {tryAgainButton}
           </div>
-        </div>
-        <div>
-        <Slider min={1} max={10} step={1} marks={{1:"1", 2:"2", 3:"3", 4:"4", 5:"5", 6:"6", 7:"7", 8:"8", 9:"9", 10:"10"}} onChange= {(value) => this.handleDifficultyChange(value)}/>
-        </div>
-        <div>
-          {topScores}
+          <div id="leaderboard">
+            <p id="leaderboard-title">Leaderboard</p>
+            <table id="top-scores">
+              <tr>
+                <th className="top-score-column">Name</th>
+                <th className="top-score-column">Score</th>
+              </tr>
+              {topScores}
+            </table>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-export default App;
+export default Home;

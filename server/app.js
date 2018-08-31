@@ -25,13 +25,18 @@ app.get('/getScores', (req, res) => {
       connection.query("select username,score from user_Scores order by score desc", function (err, rows) {
           connection.release();
           if (err) throw err;
-          console.log(rows);
-          res.send(JSON.stringify(rows));
+
+           var apiResult = {};
+          var resultJson = JSON.stringify(rows);
+            resultJson = JSON.parse(resultJson);
+            apiResult.scores = resultJson
+              console.log(apiResult);
+          res.status(200).json(apiResult);
       });
   });
 })
+
 app.get('/getWords', (req, res) => {
-console.log("request: ", req);
 //res.send('Hello World!')
 Request.get("http://app.linkedin-reach.io/words?difficulty=" + req.query.difficulty, (error, response, body) => {
     if(error) {
