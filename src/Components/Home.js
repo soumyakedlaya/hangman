@@ -5,6 +5,7 @@ import Spinner from 'react-spinner-material';
 import 'rc-slider/assets/index.css';
 import './Home.css';
 import getData from '../util/callServer';
+// import submitData from '../util/callServer';
 
 //coordinates for hangman figure
 const bodyPartsObj = {
@@ -87,10 +88,23 @@ class Home extends Component {
     console.log(err)
   }
 
+  // submitScore() {
+  //   const url = 'submitScore';
+  //   submitData(url, {name: 'Arush', score: 120}, this.submitScoreSuccess, this.submitScoreFailure)
+  // }
+  //
+  // submitScoreSuccess = () => {
+  //   console.log("SUCCESSSSSS");
+  // }
+  //
+  // submitScoreFailure  = () => {
+  //   console.log("FAILURE");
+  // }
 //lifecycle method that runs before page is rendered
   componentDidMount(){
     this.getRandomWord(this.state.difficulty);
     this.getScores();
+    // this.submitScore();
   }
 
 //converts character from user input to lowercase and checks if the character is not an alphabet.
@@ -100,8 +114,10 @@ class Home extends Component {
   validateInput(event){
     var value = event.target.value.toLowerCase();
 
+    //rejex is including everything but a-zA-Z. If value is anything but a letter, match = true, nonLetters = true. If value is a latter, match = false, nonLetter = true
     var nonLetters = value.match(/^[^a-zA-Z]+$/) ? true : false;
 
+    //if value is not an empty character and is a letter
     if (value.length && !nonLetters) {
       var error = true;
       this.setState({guessedCharacter: value});
